@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import Pdf from "./Pdf";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -50,7 +51,7 @@ const AdministrarUsuario = () => {
       `http://localhost:3000/api/usuario/listarid/${id}`
     );
     setUsuarios(listar.data);
-console.log(usuarios);
+console.log(usuarios)
 /*    const response = await axios.put(
       `http://localhost:3000/api/usuario/editar/${id}`,
       {
@@ -86,12 +87,15 @@ console.log(usuarios);
         "http://localhost:3000/api/usuario/registrar",
         usuarioData
       );
-      console.log(response.data);
-      alert("Usuario registrado con éxito");
+      //console.log(response.data);
+      if(response) window.location.reload()
+      GetPersonas()
+      alert(response.data.message);
+      
     } catch (error) {
       console.error("Error al registrar usuario:", error);
       alert(
-        "Se produjo un error al registrar el usuario. Por favor, inténtalo de nuevo más tarde."
+       "error"
       );
     }
   };
@@ -117,6 +121,7 @@ console.log(usuarios);
                   Agregar
                 </button>
               </div>
+              <div className=""><Pdf/></div>
             </div>
           </div>
 
@@ -181,7 +186,7 @@ console.log(usuarios);
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  Modal title
+                  usuarios
                 </h1>
                 <button
                   type="button"

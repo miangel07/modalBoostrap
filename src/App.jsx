@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import {Routes, Route,BrowserRouter} from 'react-router-dom'
 import  AdministrarUsuario from './components/AdministrarUsuario'
+import Pdf from './components/Pdf'
 
 function App() {
 
@@ -11,7 +12,9 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AdministrarUsuario />}/>
+        <Route path="/" element={<AdministrarUsuario />}></Route>
+        <Route path="pdf" element={<Pdf></Pdf>}></Route>
+    
       </Routes>
     </BrowserRouter>
    
