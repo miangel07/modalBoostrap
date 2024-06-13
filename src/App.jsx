@@ -11,7 +11,7 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AdministrarUsuario />} />
+        <Route path="/" element={<AdministrarUsuario />}/>
       </Routes>
     </BrowserRouter>
    

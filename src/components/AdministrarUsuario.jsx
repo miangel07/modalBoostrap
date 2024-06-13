@@ -3,7 +3,8 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import Alert from "../components/Alertas";
+
+//import Alert from "../components/Alertas";
 
 const AdministrarUsuario = () => {
   const url = "http://localhost:3000/api/usuario/listar";
@@ -14,6 +15,18 @@ const AdministrarUsuario = () => {
   } = useForm();
 
   const [values, setValues] = useState([]);
+  const [usuarios, setUsuarios] = useState(
+    {
+      nombre_usuario: "",
+      apellido_usuario: "",
+      correo_electronico: "",
+      telefono_usuario: "",
+      password: "",
+      rol_usuario: "",
+      tipo_documento: "",
+      numero_identificacion: "",
+    },
+  );
   const [btnEditar, setbtnEditar] = useState(false);
 
   const [title, setTitle] = useState(); // titulo del modal
@@ -22,17 +35,70 @@ const AdministrarUsuario = () => {
   useEffect(() => {
     GetPersonas();
   }, []);
+  const eliminar = async (id) => {
+    console.log(id);
 
-  const usuario = async(data)=> {
- const registrar = await axios.post("http://localhost:3000/api/usuario/registrar",data)
+    const response = await axios.delete(
+      `http://localhost:3000/api/usuario/eliminar/${id}`
+    );
+    GetPersonas();
 
- console.log(registrar.data.message)
-  }
+    alert(response.data.message);
+  };
+  const editarusuario= async(id)=>{
+    const listar = await axios.get(
+      `http://localhost:3000/api/usuario/listarid/${id}`
+    );
+    setUsuarios(listar.data);
+console.log(usuarios);
+/*    const response = await axios.put(
+      `http://localhost:3000/api/usuario/editar/${id}`,
+      {
+        nombre_usuario: data.nombre_usuario,
+        apellido_usuario: data.apellido_usuario,
+        correo_electronico: data.correo_electronico,
+        telefono_usuario: data.telefono_usuario,
+        password:  data.password,
+        rol_usuario: data.rol_usuario,
+        tipo_documento: data.tipo_documento,
+        numero_identificacion: data.numero_identificacion,
+      }
+    ); */
+   /*  GetPersonas();
+    alert(response.data.message); */
+   
+  } 
+  const usuario = async (data) => {
+    try {
+
+      const usuarioData = {
+        nombre_usuario: data.nombre_usuario,
+        apellido_usuario: data.apellido_usuario,
+        correo_electronico: data.correo_electronico,
+        telefono_usuario: data.telefono_usuario,
+        password: data.password,
+        rol_usuario: data.rol_usuario,
+        tipo_documento: data.tipo_documento,
+        numero_identificacion: data.numero_identificacion,
+      };
+
+      const response = await axios.post(
+        "http://localhost:3000/api/usuario/registrar",
+        usuarioData
+      );
+      console.log(response.data);
+      alert("Usuario registrado con éxito");
+    } catch (error) {
+      console.error("Error al registrar usuario:", error);
+      alert(
+        "Se produjo un error al registrar el usuario. Por favor, inténtalo de nuevo más tarde."
+      );
+    }
+  };
 
   const GetPersonas = async () => {
     const respuesta = await axios.get(url);
     setValues(respuesta.data);
-    console.log(respuesta.data);
   };
 
   return (
@@ -84,12 +150,17 @@ const AdministrarUsuario = () => {
                         <td>{usuario.tipo_documento}</td>
                         <td>
                           <button
-                            onClick={() => editarusuario(usuario.id)}
+                            onClick={() => editarusuario(usuario.id_usuario)}
                             className="btn btn-warning"
                           >
                             editar
                           </button>
-                          <button className="btn btn-danger">eliminar</button>
+                          <button
+                            onClick={() => eliminar(usuario.id_usuario)}
+                            className="btn btn-danger"
+                          >
+                            eliminar
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -121,7 +192,7 @@ const AdministrarUsuario = () => {
               </div>
               <div className="modal-body">
                 {/* formulario aqui */}
-                <form onSubmit={handleSubmit((data)=>usuario(data))}>
+                <form onSubmit={handleSubmit(usuario)}>
                   <div className="mb-3">
                     <label htmlFor="exampleInputEmail1" className="form-label">
                       nombre
@@ -171,6 +242,20 @@ const AdministrarUsuario = () => {
                       {...register("telefono_usuario")}
                     />
                   </div>
+
+                  <div className="mb-3">
+                    <label
+                      htmlFor="exampleInputPassword1"
+                      className="form-label"
+                    >
+                      contraseña
+                    </label>
+                    <input
+                      {...register("password")}
+                      type="text"
+                      className="form-control"
+                    />
+                  </div>
                   <div className="mb-3">
                     <label
                       htmlFor="exampleInputPassword1"
@@ -184,15 +269,16 @@ const AdministrarUsuario = () => {
                       className="form-control"
                     />
                   </div>
+
                   <div className="mb-3">
                     <label
                       htmlFor="exampleInputPassword1"
                       className="form-label"
                     >
-                      contraseña
+                      tipo de documento
                     </label>
                     <input
-                      {...register("contraseña_usario")}
+                      {...register("tipo_documento")}
                       type="text"
                       className="form-control"
                     />
@@ -206,19 +292,6 @@ const AdministrarUsuario = () => {
                     </label>
                     <input
                       {...register("numero_identificacion")}
-                      type="text"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label
-                      htmlFor="exampleInputPassword1"
-                      className="form-label"
-                    >
-                      tipo de documento
-                    </label>
-                    <input
-                      {...register("tipo_documento")}
                       type="text"
                       className="form-control"
                     />
